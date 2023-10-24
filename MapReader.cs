@@ -1,49 +1,16 @@
 ﻿using Newtonsoft.Json;
 using System.Runtime.InteropServices;
+using System.Text;
+using System.Xml;
+using System.Xml.Serialization;
 
 namespace TurboMapReader
 {
-	public class MapLayer
-	{
-		public int[] data;  // "data":[. . .]
-		public int height;  // "height":20,
-		public int id;
-		public string name; //  "name":"Ground Layer",
-		public string type;
-		public bool visible;
-		public int width;   //  "width":30,
-		public int x;
-		public int y;
-	}
 
-	public class Tileset
-	{
-		public int firstgid;
-		public string source;
-	}
-
-	public class TiledMap
-	{
-		public int compressionLevel;
-		public int height;
-		public bool infinite;
-
-		public List<MapLayer> layers;
-
-		public int nextlayerid;
-		public int nextobjectid;
-		public string orientation;
-		public string renderorder;
-		public string tiledversion;
-		public int tileheight;    //  "tileheight":16,
-
-		public List<Tileset> tilesets;
-
-		public int tilewidth;     //  "tilewidth":16,
-		public string type;
-		public string version;
-		public int width;
-	}
+	/// <summary>
+	/// This is the interface to this library.
+	/// Contains a static function LoadMapFromFile
+	/// </summary>
 	public class MapReader
 	{
 		/// <summary>
@@ -57,12 +24,40 @@ namespace TurboMapReader
 		/// <returns>The data in the file wrapped in a TiledMap instance or null if reading fails.</returns>
 		public static TiledMap? LoadMapFromFile(string filename)
 		{
-			StreamReader fileReader = new StreamReader(filename);
+			StreamReader fileReader = null;
+			try
+			{
+				fileReader = new StreamReader(filename);
+			}
+			catch(FileNotFoundException e)
+			{
+				Console.Write("Could not find Tiled map file: ");
+				Console.ForegroundColor = ConsoleColor.Green;
+				Console.WriteLine(filename);
+				Console.ResetColor();
+				Console.WriteLine("Error message: " + e.Message);
+				return null;
+			}
+
 			string fileContents = fileReader.ReadToEnd();
+			fileReader.Close();
 
 			try
 			{
 				TiledMap mapData = JsonConvert.DeserializeObject<TiledMap>(fileContents);
+				if (mapData.tilesets.Count > 0)
+				{
+					mapData.tilesetFiles = new List<TilesetFile>();
+					foreach (Tileset tileset in mapData.tilesets)
+					{
+						TilesetFile tilesetFile = new TilesetFile();
+						tilesetFile = LoadTileSetFromFile(tileset.source);
+						if (tilesetFile != null)
+						{
+							mapData.tilesetFiles.Add(tilesetFile);
+						}
+					}
+				}
 				return mapData;
 			}
 			catch (JsonReaderException e)
@@ -74,6 +69,39 @@ namespace TurboMapReader
 				Console.WriteLine("Error message: " + e.Message);
 				return null;
 			}
+		}
+
+		private static TilesetFile? LoadTileSetFromFile(string filename)
+		{
+			// The file must have an .xml extension
+			// copy the file to temp xml file
+			if (File.Exists(filename) == false)
+			{
+				Console.Write("No such tile set file: ");
+				Console.ForegroundColor = ConsoleColor.Green;
+				Console.WriteLine(filename);
+				Console.ResetColor();
+				return null;
+			}
+
+			TilesetFile loadedData = new TilesetFile();
+			// Read data to nicer format
+			tileset tilesetData = ReadXml.ReadXmlTo<tileset>(filename); 
+
+			loadedData.version = tilesetData.version;
+			loadedData.tiledversion = tilesetData.tiledversion;
+			loadedData.name = tilesetData.name;
+			loadedData.tilewidth = Convert.ToInt32(tilesetData.tilewidth);
+			loadedData.tileheight = Convert.ToInt32(tilesetData.tileheight);
+			loadedData.tilecount = Convert.ToInt32(tilesetData.tilecount);
+			loadedData.columns = Convert.ToInt32(tilesetData.columns);
+			loadedData.image = tilesetData.image.source;
+			int lastSlash = loadedData.image.LastIndexOf('/');
+			loadedData.imageWoPath = tilesetData.image.source.Substring(lastSlash + 1);
+			loadedData.imagewidth = Convert.ToInt32(tilesetData.image.width);
+			loadedData.imageheight = Convert.ToInt32(tilesetData.image.height);
+
+			return loadedData;
 		}
 	}
 }
