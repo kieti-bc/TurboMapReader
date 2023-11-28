@@ -56,6 +56,13 @@ namespace TurboMapReader
 						{
 							mapData.tilesetFiles.Add(tilesetFile);
 						}
+						else 
+						{
+							Console.Write("Could not read tileset from ");
+							Console.ForegroundColor = ConsoleColor.Green;
+							Console.WriteLine(tileset.source);
+							Console.ResetColor();
+						}
 					}
 				}
 				return mapData;
