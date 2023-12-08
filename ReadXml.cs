@@ -2,6 +2,9 @@
 
 namespace TurboMapReader
 {
+	/// <summary>
+	/// This class can read a given XML file to any type of object
+	/// </summary>
 	internal class ReadXml
 	{
 		public static T? ReadXmlTo<T>(string filename)

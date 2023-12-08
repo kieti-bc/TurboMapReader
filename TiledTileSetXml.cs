@@ -7,8 +7,11 @@ using System.Xml.Serialization;
 
 namespace TurboMapReader
 {
+	/// <summary>
+	/// Represents a tileset exported in XML format
+	/// </summary>
 	[Serializable]
-	public class tileset
+	public class TiledTileSetXML
 	{
 		[XmlAttribute]
 		public string version { get; set; }

@@ -51,9 +51,9 @@ namespace TurboMapReader
 	}
 
 	/// <summary>
-	/// Refers to a .tmx file.
-	/// Variable <b>source</b> is the filename of the TMX file
-	/// TMX files are represented by class TileSetFile
+	/// Refers to a .tmx or .tsj tileset file.
+	/// Variable <b>source</b> is the filename of the tileset file
+	/// which are represented by class TileSetFile
 	/// </summary>
 	public class Tileset
 	{
@@ -62,7 +62,7 @@ namespace TurboMapReader
 	}
 
 	/// <summary>
-	/// Represents a TSX file
+	/// Represents a tileset file exported from Tiled
 	/// Variable <b>imageWoPath</b> is the image containing the graphics
 	/// </summary>
 	public class TilesetFile
@@ -93,6 +93,50 @@ namespace TurboMapReader
 	/// </summary>
 	public class TiledMap
 	{
+		// Useful getters
+		public MapLayer? GetLayerByName(string name)
+		{
+			foreach (MapLayer layer in layers)
+			{
+				if (layer.name == name) return layer;
+			}
+			return null;
+		}
+		public int GetTilesetWidthInTiles()
+		{
+			if (tilesetFiles.Count == 0)
+			{
+				return 0;
+			}
+			else
+			{
+				return tilesetFiles[0].columns;
+			}
+		}
+		public string GetTileSetImageName()
+		{
+			if (tilesetFiles.Count == 0)
+			{
+				return "";
+			}
+			else
+			{
+				return tilesetFiles[0].imageWoPath;
+			}
+
+		}
+		public int GetTilesetImageWidth()
+		{
+			if (tilesetFiles.Count == 0)
+			{
+				return 0;
+			}
+			else
+			{
+				return tilesetFiles[0].imagewidth;
+			}
+		}
+
 		public int compressionLevel;
 		public int height;
 		public bool infinite;

@@ -51,7 +51,7 @@ namespace TurboMapReader
 					foreach (Tileset tileset in mapData.tilesets)
 					{
 						TilesetFile tilesetFile = new TilesetFile();
-						tilesetFile = LoadTileSetFromFile(tileset.source);
+						tilesetFile = TilesetReader.LoadTileSetFromFile(tileset.source);
 						if (tilesetFile != null)
 						{
 							mapData.tilesetFiles.Add(tilesetFile);
@@ -78,37 +78,5 @@ namespace TurboMapReader
 			}
 		}
 
-		private static TilesetFile? LoadTileSetFromFile(string filename)
-		{
-			// The file must have an .xml extension
-			// copy the file to temp xml file
-			if (File.Exists(filename) == false)
-			{
-				Console.Write("No such tile set file: ");
-				Console.ForegroundColor = ConsoleColor.Green;
-				Console.WriteLine(filename);
-				Console.ResetColor();
-				return null;
-			}
-
-			TilesetFile loadedData = new TilesetFile();
-			// Read data to nicer format
-			tileset tilesetData = ReadXml.ReadXmlTo<tileset>(filename); 
-
-			loadedData.version = tilesetData.version;
-			loadedData.tiledversion = tilesetData.tiledversion;
-			loadedData.name = tilesetData.name;
-			loadedData.tilewidth = Convert.ToInt32(tilesetData.tilewidth);
-			loadedData.tileheight = Convert.ToInt32(tilesetData.tileheight);
-			loadedData.tilecount = Convert.ToInt32(tilesetData.tilecount);
-			loadedData.columns = Convert.ToInt32(tilesetData.columns);
-			loadedData.image = tilesetData.image.source;
-			int lastSlash = loadedData.image.LastIndexOf('/');
-			loadedData.imageWoPath = tilesetData.image.source.Substring(lastSlash + 1);
-			loadedData.imagewidth = Convert.ToInt32(tilesetData.image.width);
-			loadedData.imageheight = Convert.ToInt32(tilesetData.image.height);
-
-			return loadedData;
-		}
 	}
 }
