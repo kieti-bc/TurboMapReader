@@ -14,30 +14,30 @@ namespace TurboMapReader
 	public class TiledTileSetXML
 	{
 		[XmlAttribute]
-		public string version { get; set; }
+		public string version { get; set; } = "";
 		[XmlAttribute]
-		public string tiledversion { get; set; }
+		public string tiledversion { get; set; } = "";
 		[XmlAttribute]
-		public string name { get; set; }
+		public string name { get; set; } = "";
 		[XmlAttribute]
-		public string tilewidth { get; set; }
+		public string tilewidth { get; set; } = "0";
 		[XmlAttribute]
-		public string tileheight { get; set; }
+		public string tileheight { get; set; } = "0";
 		[XmlAttribute]
-		public string tilecount { get; set; }
+		public string tilecount { get; set; } = "0";
 		[XmlAttribute]
-		public string columns { get; set; }
+		public string columns { get; set; } = "0";
 		[XmlElement]
-		public image image { get; set; }
+		public image? image { get; set; }
 	}
 	[Serializable]
 	public class image
 	{
 		[XmlAttribute]
-		public string source { get; set; }
+		public string source { get; set; } = "";
 		[XmlAttribute]
-		public string width { get; set; }
+		public string width { get; set; } = "0";
 		[XmlAttribute]
-		public string height { get; set; }
+		public string height { get; set; } = "0";
 	}
 }

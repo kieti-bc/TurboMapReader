@@ -11,18 +11,18 @@ namespace TurboMapReader
 	/// </summary>
 	internal class TiledTileSetJSON
 	{
-		public int columns;
-		public string image;
-		public int imageheight;
-		public int imagewidth;
-		public int margin;
-		public string name;
-		public int spacing;
-		public int tilecount;
-		public string tiledversion;
-		public int tileheight;
-		public int tilewidth;
-		public string type;
-		public string version;
+		public int columns = 0;
+		public string image = "";
+		public int imageheight = 0;
+		public int imagewidth = 0;
+		public int margin = 0;
+		public string name = "";
+		public int spacing = 0;
+		public int tilecount = 0;
+		public string tiledversion = "";
+		public int tileheight = 0;
+		public int tilewidth = 0;
+		public string type = "";
+		public string version = "";
 	}
 }

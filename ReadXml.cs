@@ -10,13 +10,13 @@ namespace TurboMapReader
 		public static T? ReadXmlTo<T>(string filename)
 		{
 			// Contents of the XML file
-			T contents;
+			T? contents;
 			var serializer = new XmlSerializer(typeof(T));
 			using (var fileStream = new FileStream(filename, FileMode.Open, FileAccess.Read))
 			{
 				try
 				{
-					contents = (T)serializer.Deserialize(fileStream);
+					contents = (T?)serializer.Deserialize(fileStream);
 					return contents;
 				}
 				catch (InvalidOperationException e)

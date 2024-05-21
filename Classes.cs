@@ -32,11 +32,11 @@ namespace TurboMapReader
 	}
 	public class MapLayer
 	{
-		public int[] data;  // "data":[. . .]
+		public int[]? data;  // "data":[. . .]
 		public int height;  // "height":20,
 		public int id;
-		public string name; //  "name":"Ground Layer",
-		public string type;
+		public string name = "";//  "name":"Ground Layer",
+		public string type = "";
 		public bool visible;
 		public int width;   //  "width":30,
 		public int x;
@@ -58,7 +58,7 @@ namespace TurboMapReader
 	public class Tileset
 	{
 		public int firstgid;
-		public string source;
+		public string source = "";
 	}
 
 	/// <summary>
@@ -67,15 +67,15 @@ namespace TurboMapReader
 	/// </summary>
 	public class TilesetFile
 	{
-		public string version;
-		public string tiledversion;
-		public string name;
+		public string version = "";
+		public string tiledversion = "";
+		public string name = "";
 		public int tilewidth;
 		public int tileheight;
 		public int tilecount;
 		public int columns;
-		public string image;
-		public string imageWoPath;
+		public string image = "";
+		public string imageWoPath = "";
 		public int imagewidth;
 		public int imageheight;
 
@@ -96,15 +96,21 @@ namespace TurboMapReader
 		// Useful getters
 		public MapLayer? GetLayerByName(string name)
 		{
-			foreach (MapLayer layer in layers)
+			if (layers != null)
 			{
-				if (layer.name == name) return layer;
+				foreach (MapLayer layer in layers)
+				{
+					if (layer.name == name)
+					{
+						return layer;
+					}
+				}
 			}
 			return null;
 		}
 		public int GetTilesetWidthInTiles()
 		{
-			if (tilesetFiles.Count == 0)
+			if (tilesetFiles == null || tilesetFiles.Count == 0)
 			{
 				return 0;
 			}
@@ -115,7 +121,7 @@ namespace TurboMapReader
 		}
 		public string GetTileSetImageName()
 		{
-			if (tilesetFiles.Count == 0)
+			if (tilesetFiles == null || tilesetFiles.Count == 0)
 			{
 				return "";
 			}
@@ -123,13 +129,12 @@ namespace TurboMapReader
 			{
 				return tilesetFiles[0].imageWoPath;
 			}
-
 		}
 		public int GetTilesetImageWidth()
 		{
-			if (tilesetFiles.Count == 0)
+			if (tilesetFiles == null || tilesetFiles.Count == 0)
 			{
-				return 0;
+					return 0;
 			}
 			else
 			{
@@ -141,24 +146,28 @@ namespace TurboMapReader
 		public int height;
 		public bool infinite;
 
-		public List<MapLayer> layers;
+		public List<MapLayer>? layers;
 
 		public int nextlayerid;
 		public int nextobjectid;
-		public string orientation;
-		public string renderorder;
-		public string tiledversion;
+		public string orientation = "";
+		public string renderorder = "";
+		public string tiledversion = "";
 		public int tileheight;    //  "tileheight":16,
 
-		public List<Tileset> tilesets;
-		public List<TilesetFile> tilesetFiles;
+		public List<Tileset>? tilesets;
+		public List<TilesetFile>? tilesetFiles;
 
 		public int tilewidth;     //  "tilewidth":16,
-		public string type;
-		public string version;
+		public string type = "";
+		public string version = "";
 		public int width;
 		public void PrintToConsole()
 		{
+			if (tilesetFiles== null || layers == null)
+			{
+				return;
+			}
 			string sizeString = infinite ? "Infinite" : $"{width} x {height} tiles.";
 			string[] pairs = {"Type", type, "Size", sizeString, "Tile size (px)", $"{tilewidth} x {tileheight}" };
 			PairWriter.PrintToConsole("TileMap", pairs, 0);

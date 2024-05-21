@@ -46,6 +46,10 @@ namespace TurboMapReader
 		private static TilesetFile ConvertToTileset(TiledTileSetXML tilesetData)
 		{
 			TilesetFile loadedData = new TilesetFile();
+			if (tilesetData == null)
+			{
+				return loadedData;
+			}
 			loadedData.version = tilesetData.version;
 			loadedData.tiledversion = tilesetData.tiledversion;
 			loadedData.name = tilesetData.name;
@@ -53,11 +57,14 @@ namespace TurboMapReader
 			loadedData.tileheight = Convert.ToInt32(tilesetData.tileheight);
 			loadedData.tilecount = Convert.ToInt32(tilesetData.tilecount);
 			loadedData.columns = Convert.ToInt32(tilesetData.columns);
-			loadedData.image = tilesetData.image.source;
-			int lastSlash = loadedData.image.LastIndexOf('/');
-			loadedData.imageWoPath = tilesetData.image.source.Substring(lastSlash + 1);
-			loadedData.imagewidth = Convert.ToInt32(tilesetData.image.width);
-			loadedData.imageheight = Convert.ToInt32(tilesetData.image.height);
+			if (tilesetData.image != null && tilesetData.image.source != null)
+			{
+				loadedData.image = tilesetData.image.source;
+				int lastSlash = loadedData.image.LastIndexOf('/');
+				loadedData.imageWoPath = tilesetData.image.source.Substring(lastSlash + 1);
+				loadedData.imagewidth = Convert.ToInt32(tilesetData.image.width);
+				loadedData.imageheight = Convert.ToInt32(tilesetData.image.height);
+			}
 			return loadedData;
 		}
 		private static TilesetFile ConvertToTileset(TiledTileSetJSON tilesetData)
@@ -83,8 +90,12 @@ namespace TurboMapReader
 			// Read data to nicer format
 			try
 			{
-				TiledTileSetXML tilesetData = ReadXml.ReadXmlTo<TiledTileSetXML>(filename);
-				return ConvertToTileset(tilesetData);
+				TiledTileSetXML? tilesetData = ReadXml.ReadXmlTo<TiledTileSetXML>(filename);
+				if (tilesetData != null)
+				{
+					return ConvertToTileset(tilesetData);
+				}
+				return null;
 			}
 			catch (Exception ex)
 			{
@@ -96,12 +107,18 @@ namespace TurboMapReader
 		{
 			try
 			{
-				StreamReader fileReader = null;
-				fileReader = new StreamReader(filename);
+				StreamReader fileReader = new StreamReader(filename);
 				string fileContents = fileReader.ReadToEnd();
 				fileReader.Close();
-				TiledTileSetJSON tilesetData = JsonConvert.DeserializeObject<TiledTileSetJSON>(fileContents);
-				return ConvertToTileset(tilesetData);
+				TiledTileSetJSON? tilesetData = JsonConvert.DeserializeObject<TiledTileSetJSON>(fileContents);
+				if (tilesetData != null)
+				{
+					return ConvertToTileset(tilesetData);
+				}
+				else
+				{
+					throw new NullReferenceException();
+				}
 			}
 			catch (Exception e)
 			{

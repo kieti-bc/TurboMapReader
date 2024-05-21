@@ -24,7 +24,7 @@ namespace TurboMapReader
 		/// <returns>The data in the file wrapped in a TiledMap instance or null if reading fails.</returns>
 		public static TiledMap? LoadMapFromFile(string filename)
 		{
-			StreamReader fileReader = null;
+			StreamReader? fileReader;
 			try
 			{
 				fileReader = new StreamReader(filename);
@@ -44,13 +44,13 @@ namespace TurboMapReader
 
 			try
 			{
-				TiledMap mapData = JsonConvert.DeserializeObject<TiledMap>(fileContents);
-				if (mapData.tilesets.Count > 0)
+				TiledMap? mapData = JsonConvert.DeserializeObject<TiledMap>(fileContents);
+				if (mapData != null && mapData.tilesets != null && mapData.tilesets.Count > 0)
 				{
 					mapData.tilesetFiles = new List<TilesetFile>();
 					foreach (Tileset tileset in mapData.tilesets)
 					{
-						TilesetFile tilesetFile = new TilesetFile();
+						TilesetFile? tilesetFile = new TilesetFile();
 						tilesetFile = TilesetReader.LoadTileSetFromFile(tileset.source);
 						if (tilesetFile != null)
 						{
